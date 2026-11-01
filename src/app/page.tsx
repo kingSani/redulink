@@ -1,6 +1,6 @@
 "use client";
 import Form from "next/form";
-import { FormState, shortenLink } from "./actions";
+import { type FormState, shortenLink } from "./actions";
 import { useActionState } from "react";
 export default function Home() {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
@@ -13,7 +13,9 @@ export default function Home() {
         <Form action={formAction}>
           <div className="flex flex-col items-center justify-center gap-4">
             <input type="url" name="url" placeholder="https://example.com" />
-            <button type="submit">Shorten Link</button>
+            <button type="submit" disabled={isPending}>
+              {isPending ? "Shortening..." : "Shorten Link"}
+            </button>
           </div>
         </Form>
         {state?.errors && (

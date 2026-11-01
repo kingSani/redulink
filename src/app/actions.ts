@@ -11,7 +11,10 @@ export type FormState =
   | { success: false; message: string; errors: string[]; code?: never }
   | null;
 
-export async function shortenLink(prevState: FormState, formData: FormData) {
+export async function shortenLink(
+  prevState: FormState,
+  formData: FormData,
+): Promise<FormState> {
   const link = baseLinkSchema.safeParse(formData.get("url")); // validate the link using the baseLinkSchema
   if (!link.success)
     return {
