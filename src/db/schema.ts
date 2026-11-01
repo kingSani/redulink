@@ -8,10 +8,10 @@ export const usersTable = p.pgTable("users", {
 });
 export const linksTable = p.pgTable("links", {
   id: p.integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: p
-    .integer()
-    .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
+  // userId: p
+  //   .integer()
+  //   .notNull()
+  //   .references(() => usersTable.id, { onDelete: "cascade" }),
   url: p.text("url").notNull(),
   code: p.text("code").notNull().unique(),
   createdAt: p.timestamp("created_at").defaultNow().notNull(),
