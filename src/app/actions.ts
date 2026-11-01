@@ -27,7 +27,7 @@ export async function shortenLink(
   try {
     await db.insert(linksTable).values({
       url: validatedLink,
-      code,
+      code: code,
     }); // save the link to the database
     return { success: true, message: "Link saved!", code };
   } catch (error) {
@@ -35,7 +35,9 @@ export async function shortenLink(
     return {
       success: false,
       message: "Failed to save link.",
-      errors: ["Database insertion failure occurred."],
+      errors: [
+        "Something went wrong while saving your link. Please try again.",
+      ],
     };
   }
 }
