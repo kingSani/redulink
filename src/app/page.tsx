@@ -19,7 +19,11 @@ export default function Home() {
           </div>
         </Form>
         {state?.errors && (
-          <p className="mt-4 text-red-500 text-sm font-medium">Bad link</p>
+          <p className="mt-4 text-red-500 text-sm font-medium">
+            {state.errors.map((error, index) => (
+              <p key={index}>{error}</p>
+            ))}
+          </p>
         )}
 
         {state?.success && "code" in state && (
