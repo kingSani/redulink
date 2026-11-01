@@ -15,7 +15,7 @@ export async function shortenLink(prevState: FormState, formData: FormData) {
   const link = baseLinkSchema.safeParse(formData.get("url")); // validate the link using the baseLinkSchema
   if (!link.success)
     return {
-      errors: link.error.flatten,
+      errors: link.error.issues.map((issue) => issue.message),
       success: false,
       message: "Invalid link.",
     }; // if the link is invalid, return the errors
