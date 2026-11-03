@@ -12,18 +12,18 @@ export default function Home() {
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Form action={formAction}>
           <div className="flex flex-col items-center justify-center gap-4">
-            <input type="url" name="url" placeholder="https://example.com" />
+            <input type="text" name="url" placeholder="example.com" />
             <button type="submit" disabled={isPending}>
               {isPending ? "Shortening..." : "Shorten Link"}
             </button>
           </div>
         </Form>
         {state?.errors && (
-          <p className="mt-4 text-red-500 text-sm font-medium">
+          <div className="mt-4 text-red-500 text-sm font-medium">
             {state.errors.map((error, index) => (
               <p key={index}>{error}</p>
             ))}
-          </p>
+          </div>
         )}
 
         {state?.success && "code" in state && (
