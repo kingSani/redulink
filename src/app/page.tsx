@@ -31,10 +31,15 @@ export default function Home() {
             <p className="text-zinc-600 dark:text-zinc-400 text-sm">
               Your short link is ready:
             </p>
-            <p className="text-blue-600 font-bold mt-1 text-lg">
+            <a
+              className="text-blue-600 font-bold mt-1 text-lg"
+              href={`${typeof window !== "undefined" ? window.location.origin : ""}/${state.code as string}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {typeof window !== "undefined" ? window.location.origin : ""}/
               {state.code as string}
-            </p>
+            </a>
           </div>
         )}
       </main>
