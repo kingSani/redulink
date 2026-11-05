@@ -12,6 +12,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   // this is from next/headers, it is a Headers object that contains the headers of the request
   const userAgent = request.headers.get("user-agent") || "Unknown";
   const referrer = request.headers.get("referer") || null;
+  const hostname = referrer ? new URL(referrer).hostname : null;
   const [linkRecord] = await db
     .select()
     .from(linksTable)
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       await db.insert(clicksTable).values({
         linkId: linkRecord.id,
         userAgent: userAgent,
-        referrer: referrer,
+        referrer: hostname,
       });
     } catch (error) {
       console.error("Error inserting click record:", error);

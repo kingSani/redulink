@@ -15,7 +15,7 @@ export async function shortenLink(
   prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const link = baseLinkSchema.safeParse(formData.get("url")); // validate the link using the baseLinkSchema
+  const link = await baseLinkSchema.safeParseAsync(formData.get("url")); // validate the link using the baseLinkSchema
   if (!link.success)
     return {
       errors: link.error.issues.map((issue) => issue.message),
@@ -26,7 +26,7 @@ export async function shortenLink(
   const code = nanoid(6); // generate a unique code for the link . today is 1st of november 2026
   try {
     await db.insert(linksTable).values({
-      url: validatedLink,
+      url: validatedLink.url,
       code: code,
     }); // save the link to the database
     return { success: true, message: "Link saved!", code };

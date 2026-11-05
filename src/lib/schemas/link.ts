@@ -1,21 +1,65 @@
 import { z } from "zod";
+import { lookup } from "node:dns/promises";
+import ipaddr from "ipaddr.js";
 
-export const baseLinkSchema = z
-  .string()
-  .trim()
-  .transform((val) => (val.match(/^https?:\/\//i) ? val : `https://${val}`))
-  .pipe(z.string().url("Please enter a valid URL"))
-  .refine(
-    (val) => {
-      const hostname = new URL(val).hostname;
+async function isPublicDestination(url: string): Promise<boolean> {
+  try {
+    const parsed = new URL(url);
 
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      return false;
+    }
+
+    if (parsed.username || parsed.password) {
+      return false;
+    }
+
+    let hostname = parsed.hostname.toLowerCase();
+
+    // Remove IPv6 brackets
+    hostname = hostname.replace(/^\[|\]$/g, "");
+
+    // Block local hostnames
+    if (
+      hostname === "localhost" ||
+      hostname.endsWith(".localhost") ||
+      hostname.endsWith(".local") ||
+      hostname.endsWith(".internal")
+    ) {
+      return false;
+    }
+
+    // Direct IP address
+    if (ipaddr.isValid(hostname)) {
+      return ipaddr.parse(hostname).range() === "unicast";
+    }
+
+    // DNS lookup
+    const addresses = await lookup(hostname, {
+      all: true,
+      verbatim: true,
+    });
+
+    if (!addresses.length) return false;
+
+    return addresses.every(({ address }) => {
       return (
-        hostname !== "localhost" &&
-        hostname !== "127.0.0.1" &&
-        hostname !== "0.0.0.0"
+        ipaddr.isValid(address) && ipaddr.parse(address).range() === "unicast"
       );
-    },
-    {
-      message: "This URL is not allowed.",
-    },
-  );
+    });
+  } catch {
+    return false;
+  }
+}
+
+export const baseLinkSchema = z.object({
+  url: z
+    .string()
+    .trim()
+    .url("Please enter a valid URL")
+    .refine(isPublicDestination, {
+      message: "This destination is not allowed.",
+    }),
+});
+
+export type LinkInput = z.infer<typeof baseLinkSchema>;
