@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { db } from "@/db";
 
 import { linksTable } from "@/db/schema";
-import { DrizzleError } from "drizzle-orm";
+import { DrizzleQueryError } from "drizzle-orm";
 
 export type FormState =
   | { success: true; message: string; code: string; errors?: never }
@@ -16,7 +16,9 @@ export async function shortenLink(
   prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const link = await baseLinkSchema.safeParseAsync(formData.get("url")); // validate the link using the baseLinkSchema
+  const link = await baseLinkSchema.safeParseAsync({
+    url: formData.get("url"),
+  }); // validate the link using the baseLinkSchema
   if (!link.success)
     return {
       errors: link.error.issues.map((issue) => issue.message),
@@ -30,12 +32,12 @@ export async function shortenLink(
     try {
       await db.insert(linksTable).values({
         url: validatedLink.url,
-        code: code,
+        code: "6en9l4",
       }); // save the link to the database
       return { success: true, message: "Link saved!", code };
     } catch (error) {
       if (
-        error instanceof DrizzleError && // drizzle wraps the error with error.cause, error.cause.code will throw an error if the error is not a drizzle error, so we need to check if the error is a drizzle error first
+        error instanceof DrizzleQueryError && // drizzle wraps the error with error.cause, error.cause.code will throw an error if the error is not a drizzle error, so we need to check if the error is a drizzle error first
         error.cause && // check if the error has a cause, because drizzle wraps the error with error.cause,
         typeof error.cause == "object" &&
         "code" in error.cause &&
