@@ -56,7 +56,8 @@ export const baseLinkSchema = z.object({
   url: z
     .string()
     .trim()
-    .url("Please enter a valid URL")
+    .pipe(z.url({ error: "Please enter a valid URL" }))
+
     .refine(isPublicDestination, {
       message: "This destination is not allowed.",
     }),
