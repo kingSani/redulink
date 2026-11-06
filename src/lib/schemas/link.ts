@@ -54,13 +54,13 @@ async function isPublicDestination(url: string): Promise<boolean> {
 
 export const baseLinkSchema = z.object({
   url: z
-    .string()
-    .trim()
-    .pipe(z.url({ error: "Please enter a valid URL" }))
+    .string() // this checks if the input is a string
+    .trim() // this removes any leading or trailing whitespace
+    .pipe(z.url({ error: "Please enter a valid URL" })) // pipe the string to the zod url schema to check if it's a valid URL
 
     .refine(isPublicDestination, {
       message: "This destination is not allowed.",
     }),
-});
+}); // A useful distinction: .pipe() passes data between schemas, while .refine() adds a custom condition to an existing schema.
 
 export type LinkInput = z.infer<typeof baseLinkSchema>;

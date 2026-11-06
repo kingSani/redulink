@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   // this is from next/headers, it is a Headers object that contains the headers of the request
   const userAgent = request.headers.get("user-agent") || "Unknown";
   const referrer = request.headers.get("referer") || null;
-  const hostname = referrer ? new URL(referrer).hostname : null;
+
   const [linkRecord] = await db
     .select()
     .from(linksTable)
@@ -27,6 +27,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   // Also we don't want to block the redirect if the click record insertion fails, so we catch any errors and log them
   after(async () => {
     try {
+      const hostname = referrer ? new URL(referrer).hostname : null;
       await db.insert(clicksTable).values({
         linkId: linkRecord.id,
         userAgent: userAgent,
