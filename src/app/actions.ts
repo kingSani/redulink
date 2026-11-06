@@ -32,7 +32,7 @@ export async function shortenLink(
     try {
       await db.insert(linksTable).values({
         url: validatedLink.url,
-        code: "6en9l4",
+        code: code,
       }); // save the link to the database
       return { success: true, message: "Link saved!", code };
     } catch (error) {
