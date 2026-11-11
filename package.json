@@ -9,11 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@neon/auth": "^0.8.2",
     "@neondatabase/serverless": "^1.2.0",
     "dotenv": "^18.0.9",
     "drizzle-orm": "^1.0.0-rc.5",
     "ipaddr": "^0.1.0",
     "ipaddr.js": "^2.5.0",
+    "lucide-react": "^1.72.0",
     "nanoid": "^6.0.2",
     "next": "16.4.3",
     "react": "19.3.0",

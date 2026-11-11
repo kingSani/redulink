@@ -1,17 +1,29 @@
 import * as p from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+export const neonAuth = p.pgSchema("neon_auth");
 
-export const usersTable = p.pgTable("users", {
-  id: p.integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: p.varchar().notNull(),
-  email: p.varchar().notNull().unique(),
-  createdAt: p.timestamp("created_at").defaultNow().notNull(),
+export const userInNeonAuth = neonAuth.table("user", {
+  id: p.uuid("id").defaultRandom().primaryKey().notNull(),
+  name: p.text("name").notNull(),
+  email: p.text("email").notNull(),
+  emailVerified: p.boolean("emailVerified").notNull(),
+
+  createdAt: p
+    .timestamp("createdAt", { withTimezone: true, mode: "string" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: p
+    .timestamp("updatedAt", { withTimezone: true, mode: "string" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
 });
+
 export const linksTable = p.pgTable("links", {
   id: p.integer().primaryKey().generatedAlwaysAsIdentity(),
-  // userId: p
-  //   .integer()
-  //   .notNull()
-  //   .references(() => usersTable.id, { onDelete: "cascade" }),
+  userId: p
+    .uuid()
+
+    .references(() => userInNeonAuth.id, { onDelete: "cascade" }),
   url: p.text("url").notNull(),
   code: p.text("code").notNull().unique(),
   createdAt: p.timestamp("created_at").defaultNow().notNull(),
