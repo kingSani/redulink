@@ -2,14 +2,26 @@
 
 import Form from "next/form";
 import { type FormState, shortenLink } from "./actions";
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Image from "next/image";
+import { clientLinkSchema } from "@/lib/schemas/clientLink";
 
 export default function Home() {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(
     shortenLink,
     null,
   );
+  const [clientErrors, setClientErrors] = useState<string[]>([]);
+  const [shakeInput, setShakeInput] = useState(false);
+  const [hasEdited, setHasEdited] = useState(false);
+
+  const errors = clientErrors.length
+    ? clientErrors
+    : state?.success === false && !hasEdited
+      ? state.errors.slice(0, 1)
+      : [];
+
+  const hasErrors = errors.length > 0;
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-white">
@@ -49,7 +61,24 @@ export default function Home() {
 
           {/* Form Card */}
           <div className="rounded-2xl   bg-white p-5 shadow-[0_8px_40px_rgba(0,0,0,0.05)] dark:border-zinc-800 dark:bg-zinc-950 dark:shadow-[0_8px_40px_rgba(0,0,0,0.25)] sm:p-8">
-            <Form action={formAction}>
+            <Form
+              action={(formData) => {
+                const result = clientLinkSchema.safeParse({
+                  url: formData.get("url"),
+                });
+                if (!result.success) {
+                  setClientErrors([result.error.issues[0].message]);
+                  setShakeInput(false);
+                  requestAnimationFrame(() => setShakeInput(true));
+                  return;
+                }
+
+                setHasEdited(false);
+                setClientErrors([]);
+                setShakeInput(false);
+                formAction(formData);
+              }}
+            >
               <div className="flex flex-col gap-4">
                 <label
                   htmlFor="url"
@@ -65,19 +94,23 @@ export default function Home() {
                   placeholder="https://example.com/your-long-url"
                   required
                   disabled={isPending}
-                  aria-invalid={!!state?.errors?.length}
-                  aria-describedby={
-                    state?.errors?.length ? "url-errors" : undefined
-                  }
-                  className={`w-full rounded-xl px-5 py-4 text-base outline-none transition-all duration-300
-    placeholder:text-zinc-400 disabled:opacity-60
+                  aria-invalid={hasErrors}
+                  aria-describedby={hasErrors ? "url-errors" : undefined}
+                  onChange={() => {
+                    setClientErrors([]);
+                    setHasEdited(true);
+                  }}
+                  className={`w-full rounded-xl border px-4 py-4 text-base outline-none transition-all duration-300
+    placeholder:text-gray-500 disabled:opacity-60
     ${
-      state?.errors?.length
-        ? "bg-red-500/10 text-zinc-900 shadow-[0_0_0_2px_rgba(239,68,68,0.15)] dark:text-white"
-        : "bg-zinc-100 text-zinc-900 focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,0,0,0.08)] dark:bg-white/5 dark:text-white dark:focus:bg-zinc-900 dark:focus:shadow-[0_0_0_3px_rgba(255,255,255,0.1)]"
+      hasErrors
+        ? "border-red-500/70 bg-red-500/5 text-zinc-900 ring-2 ring-red-500/10 focus:border-red-500 dark:text-white"
+        : "border-transparent bg-black/5 text-zinc-900 focus:border-zinc-300 focus:bg-white focus:ring-2 focus:ring-black/10 dark:bg-white/5 dark:text-white dark:focus:border-zinc-700 dark:focus:bg-zinc-900 dark:focus:ring-white/20"
     }
+    ${shakeInput ? "animate-[shake_0.35s_ease-in-out]" : ""}
   `}
                 />
+
                 <button
                   type="submit"
                   disabled={isPending}
@@ -97,29 +130,29 @@ export default function Home() {
                   )}
                 </button>
               </div>
+              {/* Animations */}
             </Form>
 
             {/* Errors */}
-
             <div
               className={`grid transition-[grid-template-rows,opacity,transform] duration-300 ease-in-out ${
-                state?.errors?.length
+                hasErrors
                   ? "grid-rows-[1fr] translate-y-0 opacity-100"
                   : "grid-rows-[0fr] -translate-y-2 opacity-0"
               }`}
             >
               <div className="overflow-hidden">
-                {state?.errors?.length ? (
+                {hasErrors && (
                   <div
                     id="url-errors"
                     role="alert"
                     className="mt-4 rounded-xl bg-red-500/10 p-4 text-sm leading-relaxed text-red-500"
                   >
-                    {state.errors.map((error, index) => (
+                    {errors.map((error, index) => (
                       <p key={index}>{error}</p>
                     ))}
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
 
@@ -158,21 +191,8 @@ export default function Home() {
               </div>
             )}
           </div>
-
-          <p className="mt-6 text-center text-xs text-zinc-400">
-            Paste your long URL above to get started.
-          </p>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-200/70 dark:border-zinc-800/70">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 text-xs text-zinc-500 sm:flex-row sm:px-8">
-          <p>© {new Date().getFullYear()} Redulink. All rights reserved.</p>
-
-          <p>Its completely free to use.</p>
-        </div>
-      </footer>
     </div>
   );
 }
