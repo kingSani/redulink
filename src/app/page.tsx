@@ -16,6 +16,7 @@ export default function Home() {
   const [hasEdited, setHasEdited] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const targetRef = useRef<HTMLInputElement | null>(null);
   const errors = clientErrors.length
     ? clientErrors
     : state?.success === false && !hasEdited
@@ -24,10 +25,18 @@ export default function Home() {
 
   const hasErrors = errors.length > 0;
   useEffect(() => {
+    if (state?.success && "code" in state && targetRef.current) {
+      targetRef.current.scrollIntoView({
+        // Scroll to the target element, which is the short link container
+        behavior: "smooth",
+        block: "center",
+      });
+      targetRef.current.focus({ preventScroll: true }); //this is to ensure that the element is focused without scrolling, as we already scrolled to it
+    }
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, []);
+  }, [state]);
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-white">
@@ -54,7 +63,7 @@ export default function Home() {
         <div className="w-full max-w-2xl">
           <div className="mb-10 text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Shorten links and share with ease!
+              Reduce links and share with ease!
               <br />
             </h1>
 
@@ -166,7 +175,11 @@ export default function Home() {
                   Your short link is ready!
                 </p>
 
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div
+                  className="flex flex-col gap-3 sm:flex-row sm:items-center"
+                  ref={targetRef}
+                  tabIndex={-1}
+                >
                   <a
                     href={`/${state.code}`}
                     target="_blank"
