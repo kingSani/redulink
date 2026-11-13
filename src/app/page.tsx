@@ -2,7 +2,7 @@
 
 import Form from "next/form";
 import { type FormState, shortenLink } from "./actions";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { clientLinkSchema } from "@/lib/schemas/clientLink";
 
@@ -14,7 +14,8 @@ export default function Home() {
   const [clientErrors, setClientErrors] = useState<string[]>([]);
   const [shakeInput, setShakeInput] = useState(false);
   const [hasEdited, setHasEdited] = useState(false);
-
+  const [isCopied, setIsCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const errors = clientErrors.length
     ? clientErrors
     : state?.success === false && !hasEdited
@@ -22,6 +23,11 @@ export default function Home() {
       : [];
 
   const hasErrors = errors.length > 0;
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-white">
@@ -175,14 +181,20 @@ export default function Home() {
 
                   <button
                     type="button"
-                    onClick={() =>
+                    disabled={isCopied}
+                    onClick={() => {
                       navigator.clipboard.writeText(
                         `${window.location.origin}/${state.code}`,
-                      )
-                    }
+                      );
+                      setIsCopied(true);
+                      if (timerRef.current) clearTimeout(timerRef.current);
+                      timerRef.current = setTimeout(() => {
+                        setIsCopied(false);
+                      }, 800);
+                    }}
                     className="shrink-0 rounded-lg  px-4 py-2.5 text-sm font-medium transition hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
                   >
-                    Copy link
+                    {isCopied ? "Copied!" : "Copy link"}
                   </button>
                 </div>
               </div>
