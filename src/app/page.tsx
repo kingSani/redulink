@@ -46,7 +46,6 @@ export default function Home() {
       {/* Main */}
       <main className="flex flex-1 items-center justify-center px-5 py-10 sm:px-8">
         <div className="w-full max-w-2xl">
-          {/* Intro */}
           <div className="mb-10 text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
               Shorten links and share with ease!
@@ -59,7 +58,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Form Card */}
           <div className="rounded-2xl   bg-white p-5 shadow-[0_8px_40px_rgba(0,0,0,0.05)] dark:border-zinc-800 dark:bg-zinc-950 dark:shadow-[0_8px_40px_rgba(0,0,0,0.25)] sm:p-8">
             <Form
               action={(formData) => {
@@ -130,7 +128,6 @@ export default function Home() {
                   )}
                 </button>
               </div>
-              {/* Animations */}
             </Form>
 
             {/* Errors */}
