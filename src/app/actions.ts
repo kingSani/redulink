@@ -1,5 +1,6 @@
 "use server";
 import { baseLinkSchema } from "@/lib/schemas/link";
+import { auth } from "@/lib/auth/server";
 
 import { nanoid } from "nanoid";
 import { db } from "@/db";
@@ -16,6 +17,8 @@ export async function shortenLink(
   prevState: FormState,
   formData: FormData,
 ): Promise<FormState> {
+  const { data } = await auth.getSession();
+  const userId = data?.session?.userId;
   const link = await baseLinkSchema.safeParseAsync({
     url: formData.get("url"),
   }); // validate the link using the baseLinkSchema
@@ -33,6 +36,7 @@ export async function shortenLink(
       await db.insert(linksTable).values({
         url: validatedLink.url,
         code: code,
+        userId: userId ?? null,
       }); // save the link to the database
       return { success: true, message: "Link saved!", code };
     } catch (error) {
