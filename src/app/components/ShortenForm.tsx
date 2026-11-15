@@ -1,7 +1,6 @@
 "use client";
 
-import { authClient } from "@/lib/auth/client";
-import { useActionState, useState, useEffect } from "react";
+import { useActionState, useState } from "react";
 import { type FormState, shortenLink } from "../actions";
 import Form from "next/form";
 import { clientLinkSchema } from "@/lib/schemas/clientLink";
@@ -14,8 +13,6 @@ export default function ShortenForm() {
     null,
   );
 
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [clientErrors, setClientErrors] = useState<string[]>([]);
   const [shakeInput, setShakeInput] = useState(false);
   const [hasEdited, setHasEdited] = useState(false);
@@ -26,14 +23,7 @@ export default function ShortenForm() {
       : [];
 
   const hasErrors = errors.length > 0;
-  useEffect(() => {
-    authClient.getSession().then(({ data }) => {
-      if (data?.session) {
-        setUserId(data.session.userId);
-      }
-      setLoading(false);
-    });
-  }, []);
+
   return (
     <>
       <Form

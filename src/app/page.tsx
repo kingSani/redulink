@@ -1,50 +1,13 @@
-"use client";
-
-import { useActionState, useEffect, useState } from "react";
-
-import { authClient } from "@/lib/auth/client";
-
-import LogOut from "./components/LogOut";
-import Link from "next/link";
-
 import Header from "./components/Header";
 import ShortenForm from "./components/ShortenForm";
+import ShowAuth from "./components/ShowAuth";
 
 export default function Home() {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    authClient.getSession().then(({ data }) => {
-      if (data?.session) {
-        setUserId(data.session.userId);
-      }
-      setLoading(false);
-    });
-  }, []);
-
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-white">
       {/* Header */}
       <Header>
-        {userId ? (
-          <LogOut />
-        ) : (
-          <div className="flex items-center gap-2">
-            <Link
-              href="/auth/signin"
-              className="text-sm text-zinc-500 dark:text-zinc-400"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-            >
-              Sign Up
-            </Link>
-          </div>
-        )}
+        <ShowAuth />
       </Header>
 
       {/* Main */}
