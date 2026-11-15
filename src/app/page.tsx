@@ -4,7 +4,7 @@ import ShowAuth from "./components/ShowAuth";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-white">
+    <div className="flex flex-1 flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-white">
       {/* Header */}
       <Header>
         <ShowAuth />
