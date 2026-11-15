@@ -201,6 +201,7 @@ export default function SignUpForm() {
 
   return (
     <>
+      <Header />
       <form
         action={formAction}
         onSubmit={handleSubmit}
