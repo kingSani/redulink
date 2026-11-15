@@ -154,7 +154,6 @@ export default function SignInForm() {
   return (
     <>
       <div className="flex min-h-screen flex-col  ">
-        <Header />
         <form
           action={formAction}
           onSubmit={handleSubmit}
