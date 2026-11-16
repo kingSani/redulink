@@ -206,10 +206,10 @@ export default function SignUpForm() {
         action={formAction}
         onSubmit={handleSubmit}
         noValidate
-        className="flex min-h-screen flex-col items-center  gap-5 bg-zinc-50 px-4 py-10 font-sans dark:bg-black"
+        className="flex flex-1 flex-col items-center  gap-5 bg-zinc-50 px-4 py-10 font-sans dark:bg-black"
       >
         <div className="w-full max-w-sm animate-[fadeInUp_0.6s_ease-out]">
-          <h1 className="mt-10 text-center text-2xl font-bold text-white">
+          <h1 className="mt-10 text-center text-2xl font-bold text-zinc-900 dark:text-white">
             Create new account
           </h1>
 

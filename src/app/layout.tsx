@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Redulink",
-  description: "Made by AS Projects",
+  description:
+    "Redulink is a free URL shortener. Paste a long link and get a short one to share in seconds. No signup required.",
 };
 
 const Footer = async () => {

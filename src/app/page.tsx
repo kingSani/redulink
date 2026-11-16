@@ -1,6 +1,6 @@
 import Header from "./components/Header";
 import ShortenForm from "./components/ShortenForm";
-import ShowAuth from "./components/showAuth";
+import ShowAuth from "./components/ShowAuth";
 
 export default function Home() {
   return (

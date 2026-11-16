@@ -29,9 +29,9 @@ export async function shortenLink(
       message: "Invalid link.",
     }; // if the link is invalid, return the errors
   const validatedLink = link.data; // if the link is valid, get the validated link
-  let attempts: number = 0; // prevention for infinite loop in case of collision, we will try to generate a unique code 5 times before giving up
+  let attempts = 0; // prevention for infinite loop in case of collision, we will try to generate a unique code 5 times before giving up
   while (true) {
-    const code = nanoid(8); // generate a unique code for the link . today is 1st of november 2026
+    const code = nanoid(8); // generate a unique code for the link .
     try {
       await db.insert(linksTable).values({
         url: validatedLink.url,
