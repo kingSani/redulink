@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Ubuntu, Satisfy } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const ubuntu = Ubuntu({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "700"], // Available weights for Ubuntu
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-ubuntu",
+});
+const satisfy = Satisfy({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-satisfy",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -34,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${ubuntu.variable} ${satisfy.variable}  h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}
