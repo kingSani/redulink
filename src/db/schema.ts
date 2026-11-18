@@ -38,3 +38,12 @@ export const clicksTable = p.pgTable("clicks", {
   referrer: p.text("referrer"),
   createdAt: p.timestamp("created_at").defaultNow().notNull(),
 });
+
+export const rateTable = p.pgTable("rate_limit", {
+  key: p.text("key").primaryKey(),
+  count: p.integer("count").notNull(),
+  ip: p.text("ip").notNull(),
+  windowStart: p
+    .timestamp("window_start", { withTimezone: true, mode: "string" })
+    .notNull(),
+});
