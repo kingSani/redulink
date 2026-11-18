@@ -47,7 +47,7 @@ export default function ShortenForm() {
         <div className="flex flex-col gap-4">
           <label
             htmlFor="url"
-            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="text-md font-medium z-10 text-zinc-700 dark:text-zinc-300"
           >
             Enter your destination URL
           </label>
@@ -65,7 +65,7 @@ export default function ShortenForm() {
               setClientErrors([]);
               setHasEdited(true);
             }}
-            className={`w-full rounded-xl border px-4 py-4 text-base outline-none transition-all duration-300
+            className={`w-full rounded-xl z-10 border px-4 py-4 text-base outline-none transition-all duration-300
     placeholder:text-gray-500 disabled:opacity-60
     ${
       hasErrors

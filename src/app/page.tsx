@@ -56,7 +56,7 @@ export default function Home() {
           </g>
         </svg>
         <div className="w-full z-10 max-w-2xl">
-          <div className="mb-10 text-center">
+          <div className="mb-3 text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
               Reduce links and share with ease!
               <br />
