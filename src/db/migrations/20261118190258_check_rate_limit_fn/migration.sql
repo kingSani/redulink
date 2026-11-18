@@ -25,9 +25,9 @@ BEGIN
   SELECT count INTO current_count FROM rate_limits WHERE key = rate_key;
 
   IF current_count > max_requests THEN
-    RAISE EXCEPTION 'Rate limit exceeded for %', rate_key;
+    RAISE EXCEPTION 'Rate limit exceeded for %', rate_key
                 USING ERRCODE = 'P0429',
-                  DETAIL  = format('Made %s requests; limit is %s per %s.', current_count, max_requests, window_seconds),
+                  DETAIL  = format('Limit is %s requests per %s seconds..',  max_requests, window_seconds),
                   HINT    = 'Wait until the next window before retrying.';
   END IF;
 END;
